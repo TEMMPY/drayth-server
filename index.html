@@ -1,88 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Vuroy Game</title>
-<style>
-body {background:#0b0b10;color:white;text-align:center;font-family:Arial;}
-button {padding:10px;margin:5px;}
-</style>
+  <meta charset="UTF-8">
+  <title>Drayth Online</title>
+  <style>
+    body {
+      background: #0b0b10;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding-top: 40px;
+    }
+
+    .panel {
+      width: 340px;
+      margin: 12px auto;
+      background: #181820;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    button {
+      padding: 10px 14px;
+      margin: 6px;
+      border: none;
+      border-radius: 8px;
+      background: #6c2bd9;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .secondary {
+      background: #333;
+    }
+
+    .bar {
+      width: 100%;
+      height: 14px;
+      background: #333;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0 14px;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      background: #43d17a;
+    }
+  </style>
 </head>
-
 <body>
+  <h2>⚔️ Drayth Online</h2>
 
-<h2>⚔️ Vuroy Idle Game</h2>
+  <div class="panel">
+    <p><strong>User:</strong> <span id="usernameDisplay"></span></p>
+    <p><strong>HP:</strong> <span id="hp"></span></p>
+    <div class="bar">
+      <div id="hpbar" class="fill"></div>
+    </div>
+    <p><strong>Melee:</strong> <span id="melee"></span></p>
+    <p><strong>Gold:</strong> <span id="gold"></span></p>
+  </div>
 
-<p>HP: <span id="hp"></span></p>
-<p>Melee: <span id="melee"></span></p>
-<p>Gold: <span id="gold"></span></p>
+  <div class="panel">
+    <button onclick="attack()">Attack</button>
+    <button onclick="toggleAuto()">AUTO</button>
+    <button class="secondary" onclick="logout()">Logout</button>
+  </div>
 
-<button onclick="attack()">Attack</button>
-<button onclick="toggleAuto()">AUTO</button>
+  <script>
+    const API = "https://drayth-server.onrender.com";
 
-<script>
-let player = {
-  hp:100,
-  maxHp:100,
-  melee:1,
-  gold:0
-};
+    let player = {
+      hp: 100,
+      maxHp: 100,
+      melee: 1,
+      gold: 0
+    };
 
-let auto = true;
-let user = localStorage.getItem("user");
+    let auto = true;
+    const user = localStorage.getItem("user");
 
-// LOAD
-fetch("http://localhost:3000/load", {
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({username:user})
-})
-.then(r=>r.json())
-.then(data=>{
-  if(data && data.hp){
-    player = data;
-  }
-  updateUI();
-});
+    if (!user) {
+      window.location = "login.html";
+    }
 
-// SAVE
-function saveGame(){
-  fetch("http://localhost:3000/save", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      username:user,
-      data:player
-    })
-  });
-}
+    document.getElementById("usernameDisplay").innerText = user || "";
 
-function attack(){
-  let dmg = player.melee + Math.random()*3;
+    function loadGame() {
+      fetch(API + "/load", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.hp) {
+          player = data;
+        }
+        updateUI();
+      })
+      .catch(() => {
+        updateUI();
+      });
+    }
 
-  player.gold += Math.floor(dmg);
+    function saveGame() {
+      fetch(API + "/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: user,
+          data: player
+        })
+      }).catch(() => {});
+    }
 
-  if(Math.random()<0.3){
-    player.melee += 0.1;
-  }
+    function attack() {
+      const dmg = player.melee + Math.random() * 3;
+      player.gold += Math.floor(dmg);
 
-  updateUI();
-  saveGame();
-}
+      if (Math.random() < 0.3) {
+        player.melee += 0.1;
+      }
 
-function toggleAuto(){
-  auto = !auto;
-}
+      updateUI();
+      saveGame();
+    }
 
-setInterval(()=>{
-  if(auto) attack();
-},500);
+    function toggleAuto() {
+      auto = !auto;
+    }
 
-function updateUI(){
-  hp.innerText = Math.floor(player.hp);
-  melee.innerText = player.melee.toFixed(1);
-  gold.innerText = player.gold;
-}
-</script>
+    function logout() {
+      localStorage.removeItem("user");
+      window.location = "login.html";
+    }
 
+    function updateUI() {
+      document.getElementById("hp").innerText =
+        Math.floor(player.hp) + " / " + Math.floor(player.maxHp);
+
+      document.getElementById("melee").innerText = player.melee.toFixed(1);
+      document.getElementById("gold").innerText = Math.floor(player.gold);
+
+      const hpPercent = (player.hp / player.maxHp) * 100;
+      document.getElementById("hpbar").style.width = hpPercent + "%";
+    }
+
+    setInterval(() => {
+      if (auto) attack();
+    }, 500);
+
+    loadGame();
+  </script>
 </body>
 </html>
