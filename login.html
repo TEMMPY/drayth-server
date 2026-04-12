@@ -99,4 +99,69 @@
     }
   </script>
 </body>
+</html>  <div class="card">
+    <h1>Drayth Online</h1>
+
+    <label>USERNAME</label>
+    <input id="user" placeholder="Enter username" />
+
+    <label>PASSWORD</label>
+    <input id="pass" type="password" placeholder="Enter password" />
+
+    <label>EMAIL (for register only)</label>
+    <input id="email" type="email" placeholder="Enter email" />
+
+    <div class="row">
+      <button onclick="register()">Register</button>
+      <button onclick="login()">Login</button>
+    </div>
+
+    <a class="link" href="forgot.html">Forgot password?</a>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const API = "https://drayth-server.onrender.com";
+
+    function setStatus(text) {
+      document.getElementById("status").innerText = text;
+    }
+
+    function register() {
+      const username = document.getElementById("user").value.trim();
+      const password = document.getElementById("pass").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      fetch(API + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, email })
+      })
+      .then(r => r.text())
+      .then(setStatus)
+      .catch(() => setStatus("Register failed."));
+    }
+
+    function login() {
+      const username = document.getElementById("user").value.trim();
+      const password = document.getElementById("pass").value.trim();
+
+      fetch(API + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem("user", username);
+          window.location = "index.html";
+        } else {
+          setStatus("Login failed.");
+        }
+      })
+      .catch(() => setStatus("Login failed."));
+    }
+  </script>
+</body>
 </html>
