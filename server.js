@@ -153,6 +153,7 @@ app.get("/leaderboard", (req, res) => {
       .map(([username, user]) => ({
         username,
         gold: user?.data?.gold || 0,
+        xp: user?.data?.xp || 0,
         melee: user?.data?.melee || 0,
         distance: user?.data?.distance || 0,
         magic: user?.data?.magic || 0,
@@ -160,6 +161,7 @@ app.get("/leaderboard", (req, res) => {
       }))
       .sort((a, b) => {
         if (b.gold !== a.gold) return b.gold - a.gold;
+        if (b.xp !== a.xp) return b.xp - a.xp;
         return b.melee - a.melee;
       })
       .slice(0, 10);
