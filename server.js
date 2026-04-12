@@ -1,23 +1,39 @@
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use(cors());
+app.use(express.static(__dirname));
 
 let users = {};
 
-// load users
 if (fs.existsSync("users.json")) {
-  users = JSON.parse(fs.readFileSync("users.json"));
+  try {
+    users = JSON.parse(fs.readFileSync("users.json", "utf8"));
+  } catch (e) {
+    users = {};
+  }
 }
 
-// REGISTER
-app.post("/register", (req, res) => {
-  const { username, password } = req.body;
+function saveUsers() {
+  fs.writeFileSync("users.json", JSON.stringify(users, null, 2));
+}
 
-  if (users[username]) return res.send("User exists");
+app.post("/register", (req, res) => {
+  const { username, password } = req.body || {};
+
+  if (!username || !password) {
+    return res.status(400).send("Missing username or password");
+  }
+
+  if (users[username]) {
+    return res.send("User exists");
+  }
 
   users[username] = {
     password,
@@ -29,13 +45,12 @@ app.post("/register", (req, res) => {
     }
   };
 
-  fs.writeFileSync("users.json", JSON.stringify(users));
+  saveUsers();
   res.send("Registered");
 });
 
-// LOGIN
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body || {};
 
   if (!users[username] || users[username].password !== password) {
     return res.json({ success: false });
@@ -44,25 +59,32 @@ app.post("/login", (req, res) => {
   res.json({ success: true });
 });
 
-// SAVE GAME
 app.post("/save", (req, res) => {
-  const { username, data } = req.body;
+  const { username, data } = req.body || {};
 
-  if (!users[username]) return res.send("No user");
+  if (!username || !users[username]) {
+    return res.status(400).send("No user");
+  }
 
   users[username].data = data;
-  fs.writeFileSync("users.json", JSON.stringify(users));
-
+  saveUsers();
   res.send("Saved");
 });
 
-// LOAD GAME
 app.post("/load", (req, res) => {
-  const { username } = req.body;
+  const { username } = req.body || {};
 
-  if (!users[username]) return res.json({});
+  if (!username || !users[username]) {
+    return res.json({});
+  }
 
   res.json(users[username].data);
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "login.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
