@@ -58,4 +58,28 @@
     }
   </script>
 </body>
+</html>  </div>
+
+  <script>
+    const API = "https://drayth-server.onrender.com";
+    const token = new URLSearchParams(window.location.search).get("token");
+
+    function resetPassword() {
+      const newPassword = document.getElementById("newPassword").value.trim();
+
+      fetch(API + "/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword })
+      })
+      .then(r => r.text())
+      .then(msg => {
+        document.getElementById("status").innerText = msg;
+      })
+      .catch(() => {
+        document.getElementById("status").innerText = "Reset failed.";
+      });
+    }
+  </script>
+</body>
 </html>
