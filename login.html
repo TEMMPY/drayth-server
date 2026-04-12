@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+<style>
+body {background:#111;color:white;text-align:center;font-family:Arial;}
+input {padding:10px;margin:5px;}
+button {padding:10px;margin:5px;}
+</style>
+</head>
+
+<body>
+
+<h2>Login / Register</h2>
+
+<input id="user" placeholder="Username"><br>
+<input id="pass" type="password" placeholder="Password"><br>
+
+<button onclick="register()">Register</button>
+<button onclick="login()">Login</button>
+
+<script>
+const API = "http://localhost:3000";
+
+function register() {
+  fetch(API + "/register", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:user.value,
+      password:pass.value
+    })
+  }).then(r=>r.text()).then(alert);
+}
+
+function login() {
+  fetch(API + "/login", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:user.value,
+      password:pass.value
+    })
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success){
+      localStorage.setItem("user", user.value);
+      window.location="index.html";
+    } else {
+      alert("Login failed");
+    }
+  });
+}
+</script>
+
+</body>
+</html>

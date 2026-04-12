@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Vuroy Game</title>
+<style>
+body {background:#0b0b10;color:white;text-align:center;font-family:Arial;}
+button {padding:10px;margin:5px;}
+</style>
+</head>
+
+<body>
+
+<h2>⚔️ Vuroy Idle Game</h2>
+
+<p>HP: <span id="hp"></span></p>
+<p>Melee: <span id="melee"></span></p>
+<p>Gold: <span id="gold"></span></p>
+
+<button onclick="attack()">Attack</button>
+<button onclick="toggleAuto()">AUTO</button>
+
+<script>
+let player = {
+  hp:100,
+  maxHp:100,
+  melee:1,
+  gold:0
+};
+
+let auto = true;
+let user = localStorage.getItem("user");
+
+// LOAD
+fetch("http://localhost:3000/load", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({username:user})
+})
+.then(r=>r.json())
+.then(data=>{
+  if(data && data.hp){
+    player = data;
+  }
+  updateUI();
+});
+
+// SAVE
+function saveGame(){
+  fetch("http://localhost:3000/save", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      username:user,
+      data:player
+    })
+  });
+}
+
+function attack(){
+  let dmg = player.melee + Math.random()*3;
+
+  player.gold += Math.floor(dmg);
+
+  if(Math.random()<0.3){
+    player.melee += 0.1;
+  }
+
+  updateUI();
+  saveGame();
+}
+
+function toggleAuto(){
+  auto = !auto;
+}
+
+setInterval(()=>{
+  if(auto) attack();
+},500);
+
+function updateUI(){
+  hp.innerText = Math.floor(player.hp);
+  melee.innerText = player.melee.toFixed(1);
+  gold.innerText = player.gold;
+}
+</script>
+
+</body>
+</html>
