@@ -41,7 +41,12 @@ app.post("/register", (req, res) => {
       hp: 100,
       maxHp: 100,
       melee: 1,
-      gold: 0
+      distance: 1,
+      magic: 1,
+      defense: 1,
+      gold: 0,
+      xp: 0,
+      inventory: {}
     }
   };
 
