@@ -13,18 +13,27 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(__dirname));
 
+const DATA_DIR = process.env.RENDER_DISK_MOUNT_PATH || "/data";
+const USERS_FILE = path.join(DATA_DIR, "users.json");
+
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+if (!fs.existsSync(USERS_FILE)) {
+  fs.writeFileSync(USERS_FILE, "{}");
+}
+
 let users = {};
 
-if (fs.existsSync("users.json")) {
-  try {
-    users = JSON.parse(fs.readFileSync("users.json", "utf8"));
-  } catch {
-    users = {};
-  }
+try {
+  users = JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
+} catch {
+  users = {};
 }
 
 function saveUsers() {
-  fs.writeFileSync("users.json", JSON.stringify(users, null, 2));
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
 function defaultPlayerData() {
@@ -89,7 +98,8 @@ app.post("/register", async (req, res) => {
 
     saveUsers();
     res.send("Registered");
-  } catch {
+  } catch (err) {
+    console.error(err);
     res.status(500).send("Register failed");
   }
 });
@@ -109,7 +119,8 @@ app.post("/login", async (req, res) => {
     }
 
     res.json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error(err);
     res.json({ success: false });
   }
 });
@@ -136,6 +147,30 @@ app.post("/load", (req, res) => {
   res.json(users[username].data);
 });
 
+app.get("/leaderboard", (req, res) => {
+  try {
+    const leaderboard = Object.entries(users)
+      .map(([username, user]) => ({
+        username,
+        gold: user?.data?.gold || 0,
+        melee: user?.data?.melee || 0,
+        distance: user?.data?.distance || 0,
+        magic: user?.data?.magic || 0,
+        defense: user?.data?.defense || 0
+      }))
+      .sort((a, b) => {
+        if (b.gold !== a.gold) return b.gold - a.gold;
+        return b.melee - a.melee;
+      })
+      .slice(0, 10);
+
+    res.json(leaderboard);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json([]);
+  }
+});
+
 app.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body || {};
@@ -147,10 +182,8 @@ app.post("/forgot-password", async (req, res) => {
     }
 
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = Date.now() + 1000 * 60 * 60;
-
     found.user.resetToken = token;
-    found.user.resetTokenExpires = expires;
+    found.user.resetTokenExpires = Date.now() + 1000 * 60 * 60;
     saveUsers();
 
     const baseUrl = process.env.BASE_URL || "https://draythonline.com";
@@ -161,9 +194,9 @@ app.post("/forgot-password", async (req, res) => {
       to: found.user.email,
       subject: "Drayth Online Password Reset",
       html: `
-        <div style="font-family: Arial, sans-serif;">
+        <div style="font-family:Arial,sans-serif">
           <h2>Drayth Online</h2>
-          <p>Click the link below to reset your password:</p>
+          <p>Click below to reset your password:</p>
           <p><a href="${resetLink}">${resetLink}</a></p>
           <p>This link expires in 1 hour.</p>
         </div>
@@ -208,7 +241,8 @@ app.post("/reset-password", async (req, res) => {
     saveUsers();
 
     res.send("Password reset successful");
-  } catch {
+  } catch (err) {
+    console.error(err);
     res.status(500).send("Reset failed");
   }
 });
@@ -227,4 +261,5 @@ app.get("/reset.html", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Using users file: ${USERS_FILE}`);
 });
