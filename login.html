@@ -2,38 +2,100 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Drayth Online - Login</title>
+  <title>Drayth Online</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
     body {
-      margin: 0; min-height: 100vh; font-family: Arial, sans-serif; color: #fff;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: radial-gradient(circle at top, #1b1038 0%, #090b14 45%, #05070d 100%);
-      display: flex; align-items: center; justify-content: center;
+      color: white;
     }
+
     .card {
-      width: 390px; padding: 28px; border-radius: 20px;
-      background: rgba(17,20,31,0.94); border: 1px solid rgba(137,86,255,0.28);
-      box-shadow: 0 0 40px rgba(0,0,0,0.45);
+      width: 380px;
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(17,20,31,0.95);
+      border: 1px solid rgba(137,86,255,0.3);
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      text-align: center;
     }
-    h1 { text-align: center; margin: 0 0 18px; }
-    label { display:block; margin: 10px 0 6px; color:#c9ccda; font-size:13px; font-weight:700; }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #c9ccda;
+      font-weight: bold;
+    }
+
     input {
-      width:100%; padding:14px 16px; border-radius:12px; border:1px solid #2d3142;
-      background:#171b28; color:#fff; outline:none; font-size:15px;
+      width: 100%;
+      padding: 14px;
+      margin-top: 5px;
+      border-radius: 12px;
+      border: 1px solid #2d3142;
+      background: #171b28;
+      color: white;
+      font-size: 15px;
     }
-    .row { display:flex; gap:12px; margin-top:18px; }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
     button {
-      flex:1; padding:13px 14px; border:none; border-radius:12px; cursor:pointer;
-      font-weight:700; font-size:15px; color:white;
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      color: white;
       background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      transition: 0.2s;
     }
-    #status { margin-top:16px; min-height:22px; text-align:center; font-size:14px; color:#d2d6e7; }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
     .link {
-      display:block; margin-top:12px; text-align:center; color:#bba6ff; text-decoration:none;
+      display: block;
+      margin-top: 15px;
+      color: #bba6ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    #status {
+      margin-top: 15px;
+      min-height: 20px;
+      font-size: 14px;
+      color: #d2d6e7;
     }
   </style>
 </head>
+
 <body>
+
   <div class="card">
     <h1>Drayth Online</h1>
 
@@ -44,7 +106,7 @@
     <input id="pass" type="password" placeholder="Enter password" />
 
     <label>EMAIL (for register only)</label>
-    <input id="email" type="email" placeholder="Enter email" />
+    <input id="email" placeholder="Enter email" />
 
     <div class="row">
       <button onclick="register()">Register</button>
@@ -52,6 +114,7 @@
     </div>
 
     <a class="link" href="forgot.html">Forgot password?</a>
+
     <div id="status"></div>
   </div>
 
@@ -72,9 +135,9 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password, email })
       })
-      .then(r => r.text())
-      .then(setStatus)
-      .catch(() => setStatus("Register failed."));
+      .then(res => res.text())
+      .then(msg => setStatus(msg))
+      .catch(() => setStatus("Register failed"));
     }
 
     function login() {
@@ -86,82 +149,18 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       })
-      .then(r => r.json())
+      .then(res => res.json())
       .then(data => {
         if (data.success) {
           localStorage.setItem("user", username);
           window.location = "index.html";
         } else {
-          setStatus("Login failed.");
+          setStatus("Login failed");
         }
       })
-      .catch(() => setStatus("Login failed."));
+      .catch(() => setStatus("Login failed"));
     }
   </script>
-</body>
-</html>  <div class="card">
-    <h1>Drayth Online</h1>
 
-    <label>USERNAME</label>
-    <input id="user" placeholder="Enter username" />
-
-    <label>PASSWORD</label>
-    <input id="pass" type="password" placeholder="Enter password" />
-
-    <label>EMAIL (for register only)</label>
-    <input id="email" type="email" placeholder="Enter email" />
-
-    <div class="row">
-      <button onclick="register()">Register</button>
-      <button onclick="login()">Login</button>
-    </div>
-
-    <a class="link" href="forgot.html">Forgot password?</a>
-    <div id="status"></div>
-  </div>
-
-  <script>
-    const API = "https://drayth-server.onrender.com";
-
-    function setStatus(text) {
-      document.getElementById("status").innerText = text;
-    }
-
-    function register() {
-      const username = document.getElementById("user").value.trim();
-      const password = document.getElementById("pass").value.trim();
-      const email = document.getElementById("email").value.trim();
-
-      fetch(API + "/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, email })
-      })
-      .then(r => r.text())
-      .then(setStatus)
-      .catch(() => setStatus("Register failed."));
-    }
-
-    function login() {
-      const username = document.getElementById("user").value.trim();
-      const password = document.getElementById("pass").value.trim();
-
-      fetch(API + "/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success) {
-          localStorage.setItem("user", username);
-          window.location = "index.html";
-        } else {
-          setStatus("Login failed.");
-        }
-      })
-      .catch(() => setStatus("Login failed."));
-    }
-  </script>
 </body>
 </html>
