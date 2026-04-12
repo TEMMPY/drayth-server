@@ -140,8 +140,6 @@ app.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body || {};
     const found = findUserByEmail(email);
-
-    // Always return the same message so people can't probe emails
     const genericMessage = "If that email exists, a reset link was sent.";
 
     if (!found) {
@@ -149,7 +147,7 @@ app.post("/forgot-password", async (req, res) => {
     }
 
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = Date.now() + 1000 * 60 * 60; // 1 hour
+    const expires = Date.now() + 1000 * 60 * 60;
 
     found.user.resetToken = token;
     found.user.resetTokenExpires = expires;
@@ -163,7 +161,7 @@ app.post("/forgot-password", async (req, res) => {
       to: found.user.email,
       subject: "Drayth Online Password Reset",
       html: `
-        <div style="font-family:Arial,sans-serif">
+        <div style="font-family: Arial, sans-serif;">
           <h2>Drayth Online</h2>
           <p>Click the link below to reset your password:</p>
           <p><a href="${resetLink}">${resetLink}</a></p>
@@ -217,6 +215,14 @@ app.post("/reset-password", async (req, res) => {
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "login.html"));
+});
+
+app.get("/forgot.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "forgot.html"));
+});
+
+app.get("/reset.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "reset.html"));
 });
 
 app.listen(PORT, () => {
