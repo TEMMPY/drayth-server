@@ -1,58 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
-<style>
-body {background:#111;color:white;text-align:center;font-family:Arial;}
-input {padding:10px;margin:5px;}
-button {padding:10px;margin:5px;}
-</style>
-</head>
-
-<body>
-
-<h2>Login / Register</h2>
-
-<input id="user" placeholder="Username"><br>
-<input id="pass" type="password" placeholder="Password"><br>
-
-<button onclick="register()">Register</button>
-<button onclick="login()">Login</button>
-
-<script>
-const API = "http://localhost:3000";
-
-function register() {
-  fetch(API + "/register", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      username:user.value,
-      password:pass.value
-    })
-  }).then(r=>r.text()).then(alert);
-}
-
-function login() {
-  fetch(API + "/login", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      username:user.value,
-      password:pass.value
-    })
-  })
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.success){
-      localStorage.setItem("user", user.value);
-      window.location="index.html";
-    } else {
-      alert("Login failed");
+  <meta charset="UTF-8">
+  <title>Login - Drayth Online</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding-top: 100px;
     }
-  });
-}
-</script>
 
+    .box {
+      width: 320px;
+      margin: auto;
+      background: #1b1b1b;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.35);
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 6px 0;
+      border: none;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: white;
+    }
+
+    button {
+      padding: 10px 14px;
+      margin: 8px 4px 0;
+      border: none;
+      border-radius: 8px;
+      background: #6c2bd9;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #status {
+      margin-top: 12px;
+      min-height: 20px;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Drayth Online</h2>
+
+    <input id="user" placeholder="Username">
+    <br>
+    <input id="pass" type="password" placeholder="Password">
+    <br>
+
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
+
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const API = "https://drayth-server.onrender.com";
+
+    function register() {
+      const username = document.getElementById("user").value.trim();
+      const password = document.getElementById("pass").value.trim();
+
+      fetch(API + "/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(r => r.text())
+      .then(msg => {
+        document.getElementById("status").innerText = msg;
+      })
+      .catch(() => {
+        document.getElementById("status").innerText = "Register failed";
+      });
+    }
+
+    function login() {
+      const username = document.getElementById("user").value.trim();
+      const password = document.getElementById("pass").value.trim();
+
+      fetch(API + "/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem("user", username);
+          window.location = "index.html";
+        } else {
+          document.getElementById("status").innerText = "Login failed";
+        }
+      })
+      .catch(() => {
+        document.getElementById("status").innerText = "Login failed";
+      });
+    }
+  </script>
 </body>
 </html>
