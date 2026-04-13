@@ -1,1 +1,23 @@
-{}
+[
+  {
+    "username": "Temmpy",
+    "password": "123456",
+    "level": 12,
+    "xp": 5400,
+    "gold": 900
+  },
+  {
+    "username": "Dog",
+    "password": "abc123",
+    "level": 20,
+    "xp": 12000,
+    "gold": 1500
+  },
+  {
+    "username": "Mono",
+    "password": "test123",
+    "level": 8,
+    "xp": 2100,
+    "gold": 300
+  }
+]
