@@ -627,6 +627,589 @@
     }
 
     .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 280px 1fr 340px;
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgba(16, 20, 31, 0.94);
+      border: 1px solid rgba(137, 86, 255, 0.18);
+      border-radius: 18px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.26);
+      padding: 18px;
+    }
+
+    .panel h3 {
+      margin: 0 0 14px;
+      font-size: 18px;
+      color: #f3f4f8;
+    }
+
+    .stat {
+      margin-bottom: 12px;
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #d6d9e7;
+    }
+
+    .bar {
+      width: 100%;
+      height: 14px;
+      background: #23283a;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.2s ease;
+    }
+
+    .hp-fill { background: linear-gradient(90deg, #22c55e, #4ade80); }
+    .enemy-fill { background: linear-gradient(90deg, #ef4444, #f97316); }
+    .xp-fill { background: linear-gradient(90deg, #7c3aed, #a855f7); }
+
+    .big-card {
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .enemy-area {
+      text-align: center;
+      padding: 14px 10px 6px;
+    }
+
+    .enemy-name {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .enemy-circle {
+      width: 180px;
+      height: 180px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #4f5569 0%, #1e2432 45%, #0f131d 100%);
+      border: 3px solid rgba(255,255,255,0.07);
+      box-shadow: 0 0 28px rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 58px;
+      user-select: none;
+      transition: transform 0.08s ease;
+    }
+
+    .enemy-circle.hit {
+      transform: scale(0.95);
+    }
+
+    .enemy-hint {
+      color: #aab0c4;
+      font-size: 13px;
+      margin-bottom: 18px;
+      letter-spacing: 1px;
+    }
+
+    .control-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    .btn-main {
+      flex: 1;
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+    }
+
+    .btn-auto {
+      width: 120px;
+      background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    }
+
+    .btn-auto.off {
+      background: #34384b;
+    }
+
+    .btn-logout {
+      width: 100%;
+      margin-top: 16px;
+      background: #2b3142;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .mode-btn {
+      background: #252b3d;
+      color: #d9def0;
+      padding: 12px 8px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+      color: #fff;
+    }
+
+    .small-label {
+      color: #9ea5bc;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .gold-box {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffd166;
+      margin-bottom: 6px;
+    }
+
+    .loot-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .loot-item {
+      background: #1c2231;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      color: #e6e9f5;
+      font-size: 14px;
+    }
+
+    .leaderboard-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .leaderboard-item {
+      background: #1c2231;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 12px;
+      color: #e6e9f5;
+    }
+
+    .leaderboard-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+
+    .leaderboard-sub {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #adb3c7;
+    }
+
+    .rank {
+      color: #ffd166;
+      margin-right: 8px;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #7d849b;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 1100px) {
+      .page {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">Drayth Online</div>
+    <div class="userbox">
+      <span>Player:</span>
+      <strong id="usernameDisplay"></strong>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="panel">
+      <h3>Character</h3>
+
+      <div class="stat">
+        <div class="stat-top">
+          <span>Health</span>
+          <span id="hpText">100 / 100</span>
+        </div>
+        <div class="bar"><div id="hpbar" class="fill hp-fill"></div></div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-top">
+          <span>Training Progress</span>
+          <span id="xpText">0%</span>
+        </div>
+        <div class="bar"><div id="xpbar" class="fill xp-fill"></div></div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <div class="small-label">Stats</div>
+        <div class="loot-list">
+          <div class="loot-item"><span>Melee</span><strong id="melee">1.0</strong></div>
+          <div class="loot-item"><span>Distance</span><strong id="distance">1.0</strong></div>
+          <div class="loot-item"><span>Magic</span><strong id="magic">1.0</strong></div>
+          <div class="loot-item"><span>Defense</span><strong id="defense">1.0</strong></div>
+        </div>
+      </div>
+
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="panel big-card">
+      <div class="enemy-area">
+        <div class="small-label">Current Target</div>
+        <div class="enemy-name" id="enemyName">Rat</div>
+
+        <div id="enemyCircle" class="enemy-circle">⚔️</div>
+
+        <div class="enemy-hint">STRIKE THE ENEMY</div>
+
+        <div class="stat">
+          <div class="stat-top">
+            <span>Enemy HP</span>
+            <span id="enemyHPText">0 / 0</span>
+          </div>
+          <div class="bar"><div id="enemybar" class="fill enemy-fill"></div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="small-label">Combat Style</div>
+        <div class="mode-grid">
+          <button id="modeMelee" class="mode-btn active" onclick="setMode('melee')">Melee</button>
+          <button id="modeDistance" class="mode-btn" onclick="setMode('distance')">Distance</button>
+          <button id="modeMagic" class="mode-btn" onclick="setMode('magic')">Magic</button>
+        </div>
+
+        <div class="control-row">
+          <button class="btn-main" onclick="attack()">Attack</button>
+          <button id="autoBtn" class="btn-auto" onclick="toggleAuto()">AUTO ON</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Loot & Leaderboard</h3>
+
+      <div class="small-label">Gold</div>
+      <div class="gold-box" id="gold">0</div>
+
+      <div class="small-label" style="margin-top:18px;">Inventory</div>
+      <div id="inventory" class="loot-list"></div>
+
+      <div class="small-label" style="margin-top:18px;">Top Players</div>
+      <div id="leaderboard" class="leaderboard-list"></div>
+
+      <div class="footer-note">Leaderboard updates automatically.</div>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://drayth-server.onrender.com";
+
+    const defaultPlayer = {
+      hp: 100,
+      maxHp: 100,
+      melee: 1,
+      distance: 1,
+      magic: 1,
+      defense: 1,
+      gold: 0,
+      xp: 0,
+      inventory: {}
+    };
+
+    let player = { ...defaultPlayer };
+    let auto = true;
+    let mode = "melee";
+
+    const enemies = [
+      { name: "Rat", maxHp: 30, icon: "🐀", goldMin: 2, goldMax: 5 },
+      { name: "Wolf", maxHp: 55, icon: "🐺", goldMin: 5, goldMax: 10 },
+      { name: "Goblin", maxHp: 85, icon: "👺", goldMin: 8, goldMax: 14 }
+    ];
+
+    let enemy = null;
+
+    const user = localStorage.getItem("user");
+    if (!user) {
+      window.location = "login.html";
+    }
+
+    document.getElementById("usernameDisplay").innerText = user || "";
+
+    function randomEnemy() {
+      const e = enemies[Math.floor(Math.random() * enemies.length)];
+      return {
+        name: e.name,
+        maxHp: e.maxHp,
+        hp: e.maxHp,
+        icon: e.icon,
+        goldMin: e.goldMin,
+        goldMax: e.goldMax
+      };
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      document.getElementById("modeMelee").classList.toggle("active", mode === "melee");
+      document.getElementById("modeDistance").classList.toggle("active", mode === "distance");
+      document.getElementById("modeMagic").classList.toggle("active", mode === "magic");
+    }
+
+    function toggleAuto() {
+      auto = !auto;
+      const btn = document.getElementById("autoBtn");
+      btn.innerText = auto ? "AUTO ON" : "AUTO OFF";
+      btn.classList.toggle("off", !auto);
+    }
+
+    function addLoot(item) {
+      if (!player.inventory[item]) player.inventory[item] = 0;
+      player.inventory[item]++;
+    }
+
+    function giveDrop() {
+      const drops = ["Potion", "Cloth", "Gem", "Bone"];
+      const drop = drops[Math.floor(Math.random() * drops.length)];
+      if (Math.random() < 0.45) addLoot(drop);
+    }
+
+    function attack() {
+      if (!enemy) return;
+
+      const enemyCircle = document.getElementById("enemyCircle");
+      enemyCircle.classList.add("hit");
+      setTimeout(() => enemyCircle.classList.remove("hit"), 80);
+
+      const baseStat = player[mode] || 1;
+      const damage = Math.max(1, Math.floor(baseStat + Math.random() * 4));
+      enemy.hp -= damage;
+
+      player.xp += 8 + Math.random() * 8;
+
+      if (Math.random() < 0.28) player[mode] += 0.1;
+      if (Math.random() < 0.14) player.defense += 0.05;
+
+      if (enemy.hp <= 0) {
+        const goldGain = Math.floor(
+          enemy.goldMin + Math.random() * (enemy.goldMax - enemy.goldMin + 1)
+        );
+        player.gold += goldGain;
+        giveDrop();
+        enemy = randomEnemy();
+      }
+
+      if (player.xp >= 100) player.xp = 0;
+
+      updateUI();
+      saveGame();
+    }
+
+    function updateInventory() {
+      const inv = document.getElementById("inventory");
+      inv.innerHTML = "";
+
+      const entries = Object.entries(player.inventory || {});
+      if (!entries.length) {
+        inv.innerHTML = `<div class="loot-item"><span>Empty</span><strong>-</strong></div>`;
+        return;
+      }
+
+      for (const [name, count] of entries) {
+        const div = document.createElement("div");
+        div.className = "loot-item";
+        div.innerHTML = `<span>${name}</span><strong>x${count}</strong>`;
+        inv.appendChild(div);
+      }
+    }
+
+    function updateLeaderboard(list) {
+      const board = document.getElementById("leaderboard");
+      board.innerHTML = "";
+
+      if (!Array.isArray(list) || !list.length) {
+        board.innerHTML = `<div class="leaderboard-item">No players yet.</div>`;
+        return;
+      }
+
+      list.forEach((entry, index) => {
+        const div = document.createElement("div");
+        div.className = "leaderboard-item";
+        div.innerHTML = `
+          <div class="leaderboard-top">
+            <span><span class="rank">#${index + 1}</span>${entry.username}</span>
+            <span>${Math.floor(entry.gold)} gold</span>
+          </div>
+          <div class="leaderboard-sub">
+            <span>Melee ${Number(entry.melee || 0).toFixed(1)}</span>
+            <span>Magic ${Number(entry.magic || 0).toFixed(1)}</span>
+          </div>
+        `;
+        board.appendChild(div);
+      });
+    }
+
+    function loadLeaderboard() {
+      fetch(API + "/leaderboard")
+        .then(r => r.json())
+        .then(data => updateLeaderboard(data))
+        .catch(() => updateLeaderboard([]));
+    }
+
+    function updateUI() {
+      document.getElementById("hpText").innerText =
+        `${Math.floor(player.hp)} / ${Math.floor(player.maxHp)}`;
+      document.getElementById("hpbar").style.width =
+        `${(player.hp / player.maxHp) * 100}%`;
+
+      document.getElementById("xpText").innerText = `${Math.floor(player.xp)}%`;
+      document.getElementById("xpbar").style.width = `${player.xp}%`;
+
+      document.getElementById("melee").innerText = player.melee.toFixed(1);
+      document.getElementById("distance").innerText = player.distance.toFixed(1);
+      document.getElementById("magic").innerText = player.magic.toFixed(1);
+      document.getElementById("defense").innerText = player.defense.toFixed(1);
+      document.getElementById("gold").innerText = Math.floor(player.gold);
+
+      document.getElementById("enemyName").innerText = enemy.name;
+      document.getElementById("enemyCircle").innerText = enemy.icon;
+      document.getElementById("enemyHPText").innerText =
+        `${Math.max(0, Math.floor(enemy.hp))} / ${enemy.maxHp}`;
+      document.getElementById("enemybar").style.width =
+        `${Math.max(0, (enemy.hp / enemy.maxHp) * 100)}%`;
+
+      updateInventory();
+    }
+
+    function saveGame() {
+      fetch(API + "/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: user,
+          data: player
+        })
+      })
+      .then(() => loadLeaderboard())
+      .catch(() => {});
+    }
+
+    function loadGame() {
+      fetch(API + "/load", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data && typeof data === "object" && Object.keys(data).length) {
+          player = {
+            ...defaultPlayer,
+            ...data,
+            inventory: data.inventory || {}
+          };
+        } else {
+          player = { ...defaultPlayer };
+        }
+
+        if (!player.distance) player.distance = 1;
+        if (!player.magic) player.magic = 1;
+        if (!player.defense) player.defense = 1;
+        if (!player.inventory) player.inventory = {};
+
+        enemy = randomEnemy();
+        setMode("melee");
+        updateUI();
+        loadLeaderboard();
+      })
+      .catch(() => {
+        enemy = randomEnemy();
+        updateUI();
+        loadLeaderboard();
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location = "login.html";
+    }
+
+    setInterval(() => {
+      if (auto) attack();
+    }, 700);
+
+    setInterval(() => {
+      loadLeaderboard();
+    }, 5000);
+
+    loadGame();
+  </script>
+</body>
+</html>
+    .userbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #d6d9e7;
+      font-size: 14px;
+    }
+
+    .page {
       max-width: 1280px;
       margin: 0 auto;
       padding: 24px;
