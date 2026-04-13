@@ -1,40 +1,110 @@
 const express = require("express");
 const fs = require("fs");
-const cors = require("cors");
 const path = require("path");
-const crypto = require("crypto");
-const nodemailer = require("nodemailer");
-const bcrypt = require("bcryptjs");
+const session = require("express-session");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+
+app.use(session({
+  secret: "secretkey",
+  resave: false,
+  saveUninitialized: false
+}));
+
 app.use(express.static(__dirname));
 
-const preferredDataDir = process.env.RENDER_DISK_MOUNT_PATH || "/data";
-const fallbackDataDir = path.join(__dirname, "data");
-let DATA_DIR = preferredDataDir;
+const USERS_FILE = path.join(__dirname, "users.json");
 
-function ensureDataDir(dirPath) {
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
+function loadUsers() {
+  if (!fs.existsSync(USERS_FILE)) {
+    fs.writeFileSync(USERS_FILE, "[]");
   }
+  return JSON.parse(fs.readFileSync(USERS_FILE, "utf8"));
 }
 
-try {
-  ensureDataDir(DATA_DIR);
-} catch (err) {
-  console.warn(
-    `Could not use data directory "${DATA_DIR}". Falling back to "${fallbackDataDir}".`,
-    err.message
-  );
-  DATA_DIR = fallbackDataDir;
-  ensureDataDir(DATA_DIR);
+function saveUsers(users) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
-const USERS_FILE = path.join(DATA_DIR, "users.json");
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+  const users = loadUsers();
+
+  if (!username || !password) {
+    return res.send("Missing username or password");
+  }
+
+  const existing = users.find(u => u.username === username);
+  if (existing) {
+    return res.send("Username already exists");
+  }
+
+  users.push({
+    username,
+    password,
+    level: 1,
+    xp: 0,
+    gold: 0
+  });
+
+  saveUsers(users);
+  res.redirect("/login.html");
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  const users = loadUsers();
+
+  const user = users.find(u => u.username === username && u.password === password);
+
+  if (!user) {
+    return res.send("Invalid username or password");
+  }
+
+  req.session.username = user.username;
+  res.redirect("/index.html");
+});
+
+app.get("/me", (req, res) => {
+  if (!req.session.username) {
+    return res.status(401).json({ error: "Not logged in" });
+  }
+
+  const users = loadUsers();
+  const user = users.find(u => u.username === req.session.username);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json(user);
+});
+
+app.get("/leaderboard", (req, res) => {
+  const users = loadUsers();
+
+  const sorted = [...users].sort((a, b) => {
+    if ((b.level || 0) !== (a.level || 0)) {
+      return (b.level || 0) - (a.level || 0);
+    }
+    return (b.xp || 0) - (a.xp || 0);
+  });
+
+  res.json(sorted.map(u => ({
+    username: u.username,
+    level: u.level || 0,
+    xp: u.xp || 0,
+    gold: u.gold || 0
+  })));
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});const USERS_FILE = path.join(DATA_DIR, "users.json");
 
 if (!fs.existsSync(USERS_FILE)) {
   fs.writeFileSync(USERS_FILE, "{}");
